@@ -85,40 +85,48 @@ def scrape_match(driver, match_id):
 
     driver.get(f"https://understat.com/match/{match_id}")
 
-# wait for JS objects
-shots = None
-info = None
+    # -----------------------------
+    # WAIT FOR JAVASCRIPT OBJECTS
+    # -----------------------------
+    shots = None
+    info = None
 
-for _ in range(15):
+    for _ in range(15):
 
-    try:
-        shots = driver.execute_script("""
-            return typeof shotsData !== 'undefined'
-            ? shotsData
-            : null;
-        """)
+        try:
 
-        info = driver.execute_script("""
-            return typeof match_info !== 'undefined'
-            ? match_info
-            : null;
-        """)
+            shots = driver.execute_script("""
+                return typeof shotsData !== 'undefined'
+                ? shotsData
+                : null;
+            """)
 
-        if shots and info:
-            break
+            info = driver.execute_script("""
+                return typeof match_info !== 'undefined'
+                ? match_info
+                : null;
+            """)
 
-    except:
-        pass
+            if shots and info:
+                break
 
-    time.sleep(1)
+        except:
+            pass
 
-if not shots or not info:
-    return None
+        time.sleep(1)
 
+    if not shots or not info:
+        return None
+
+    # -----------------------------
+    # MATCH INFO
+    # -----------------------------
     h_team = info.get("team_h")
     a_team = info.get("team_a")
+
     h_team_id = info.get("h")
     a_team_id = info.get("a")
+
     date = info.get("date")
     league = info.get("league")
     season = info.get("season")
