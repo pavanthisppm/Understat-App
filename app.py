@@ -248,7 +248,10 @@ def scrape_match(driver, match_id):
 # =====================================
 if st.button("Scrape + Download ZIP"):
 
-    driver = Driver(uc=True, headless=True)
+    driver = Driver(
+        browser="chrome",
+        headless=True
+    )
 
     all_files = []
 
@@ -282,17 +285,11 @@ if st.button("Scrape + Download ZIP"):
 
             progress.progress((i + 1) / len(match_ids))
 
-        if not all_files:
-            st.warning("No matches scraped.")
-            st.stop()
-
         zip_name = f"{league}_{season}.zip"
 
         with zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED) as z:
             for f in all_files:
                 z.write(f)
-
-        st.success("ZIP created successfully")
 
         with open(zip_name, "rb") as f:
             st.download_button(
