@@ -84,13 +84,36 @@ def get_match_ids(driver, url):
 def scrape_match(driver, match_id):
 
     driver.get(f"https://understat.com/match/{match_id}")
-    time.sleep(2)
 
-    shots = driver.execute_script("return shotsData;")
-    info = driver.execute_script("return match_info;")
+# wait for JS objects
+shots = None
+info = None
 
-    if not shots or not info:
-        return None
+for _ in range(15):
+
+    try:
+        shots = driver.execute_script("""
+            return typeof shotsData !== 'undefined'
+            ? shotsData
+            : null;
+        """)
+
+        info = driver.execute_script("""
+            return typeof match_info !== 'undefined'
+            ? match_info
+            : null;
+        """)
+
+        if shots and info:
+            break
+
+    except:
+        pass
+
+    time.sleep(1)
+
+if not shots or not info:
+    return None
 
     h_team = info.get("team_h")
     a_team = info.get("team_a")
