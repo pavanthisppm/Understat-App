@@ -6,7 +6,7 @@ import time
 from seleniumbase import Driver
 
 st.set_page_config(page_title="Understat Scraper", layout="wide")
-st.title("Understat → Match Scraper + ZIP Export")
+st.title("Understat Scraper")
 
 # -------------------------
 # LEAGUE / SEASON
@@ -30,7 +30,7 @@ st.write("League URL:", url)
 
 
 # =====================================
-# GET MATCH IDS (ROBUST JS METHOD)
+# GET MATCH IDS 
 # =====================================
 def get_match_ids(driver, url):
 
@@ -79,7 +79,7 @@ def get_match_ids(driver, url):
 
 
 # =====================================
-# SCRAPE MATCH (FIXED TYPES + CLEAN SCHEMA)
+# SCRAPE MATCH  
 # =====================================
 def scrape_match(driver, match_id):
 
@@ -133,7 +133,7 @@ def scrape_match(driver, match_id):
             })
 
     # -----------------------------
-    # CARD EVENTS (FROM DOM)
+    # CARD EVENTS 
     # -----------------------------
     cards = driver.execute_script("""
         let out = [];
@@ -166,7 +166,7 @@ def scrape_match(driver, match_id):
         events.append(c)
 
     # -----------------------------
-    # SORT EVENTS (SAFE FIX)
+    # SORT EVENTS 
     # -----------------------------
     events.sort(key=lambda x: int(x.get("minute", 0)))
 
@@ -246,7 +246,7 @@ def scrape_match(driver, match_id):
 # =====================================
 # MAIN BUTTON
 # =====================================
-if st.button("Scrape + Download ZIP"):
+if st.button("Scrape"):
 
     driver = Driver(
         browser="chrome",
@@ -266,8 +266,8 @@ if st.button("Scrape + Download ZIP"):
         last_id = int(result["lastId"])
 
         st.success("Match IDs extracted")
-        st.write("First ID:", first_id)
-        st.write("Last ID:", last_id)
+        # st.write("First ID:", first_id)
+        # st.write("Last ID:", last_id)
 
         step = 1 if last_id >= first_id else -1
         match_ids = list(range(first_id, last_id + step, step))
